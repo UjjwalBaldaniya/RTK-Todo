@@ -6,40 +6,35 @@ const Todo = () => {
     const todoSelector = useSelector((state) => state.todo.list)
     const dispatch = useDispatch()
 
-    const [inputField, setInputField] = useState({
-        todoName: ""
-    });
+    const [inputField, setInputField] = useState("");
     const [todoIndex, setTodoIndex] = useState();
     const [toggle, setToggle] = useState(false);
 
-
-
     const handleChange = (e) => {
-        setInputField({
-            ...inputField,
-            [e.target.name]: e.target.value
-        })
+        setInputField(e.target.value)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
         if (toggle) {
-            dispatch(editTodo({ todoIndex, inputField }))
-            setInputField({
-                todoName: ""
-            })
-            setToggle(false)
+            if (inputField) {
+                dispatch(editTodo({ todoIndex, inputField }))
+                setInputField("")
+                setToggle(false)
+            }
         } else {
-            dispatch(addTodo(inputField.todoName))
-            setInputField({
-                todoName: ""
-            })
+            if (inputField) {
+                dispatch(addTodo(inputField))
+                setInputField("")
+                // console.log(inputField);
+            }
         }
     }
 
     const handleEdit = (id) => {
         setTodoIndex(id);
-        setInputField({ todoName: todoSelector[id].list })
+        // console.log(id);
+        setInputField(todoSelector)
         setToggle(true)
     }
 
@@ -51,19 +46,19 @@ const Todo = () => {
         <>
             <form onSubmit={handleSubmit}>
                 <label>Todo :- </label>
-                <input type="text" placeholder="enter todo hear ..." name="todoName" value={inputField.todoName} onChange={handleChange} />
-                <button type="submit">Add Todo</button>
+                <input type="text" placeholder="enter todo hear ..." name="todoName" value={inputField} onChange={handleChange} />
+                <button type="submit" >{toggle ? "Edit" : "Add"} Todo</button>
             </form>
+
             {todoSelector.map((element, index) => (
-                <ul key={element.id}>
+                <ul key={index}>
                     <div>
-                        <li>{element.list}</li>
+                        <li>{element}</li>
                         <button onClick={() => handleEdit(index)}>Edit</button>
-                        <button onClick={() => handleDelete(element.id)}>delete</button>
+                        <button onClick={() => handleDelete(index)} disabled={toggle ? true : false}>delete</button>
                     </div>
                 </ul>
             ))}
-
         </>
     )
 };

@@ -6,19 +6,24 @@ const todoSlice = createSlice({
     list: [],
   },
   reducers: {
-    addTodo: (state, acions) => {
-      state.list.push({ id: Date.now(), list: acions.payload });
+    addTodo: (state, action) => {
+      state.list.push(action.payload);
     },
     deleteTodo: (state, action) => {
-      //   debugger;
-      console.log(state.list);
-
       state.list = state.list.filter(
-        (element) => element.id !== action.payload
+        (element, index) => index !== action.payload
       );
       console.log(state.list);
     },
-    editTodo: (state, action) => {},
+    editTodo: (state, action) => {
+      const UpdateValue = state.list;
+      UpdateValue.splice(
+        action.payload.todoIndex,
+        1,
+        action.payload.inputField
+      );
+      state.list = [...UpdateValue];
+    },
   },
 });
 
